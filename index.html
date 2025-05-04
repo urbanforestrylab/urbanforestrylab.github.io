@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Urban Forestry Lab | Auburn University</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a2c2cd6253.js" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      background: #F4F4F4;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: relative;
+      background: url('image/cover.png') center center / cover no-repeat;
+      padding: 40px 0;
+      color: white;
+    }
+
+    header .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(12, 35, 64, 0.8);
+      z-index: 1;
+    }
+
+    header .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .lab-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.8em;
+      letter-spacing: 1px;
+      margin: 0 0 5px 0;
+      text-transform: uppercase;
+    }
+
+    nav {
+      background: #0C2340;
+      overflow: hidden;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav a {
+      float: left;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      background-color: #E87722;
+      color: white;
+    }
+
+    section {
+      display: none;
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease-in-out;
+    }
+
+    section.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      color: #E87722;
+    }
+
+    ul {
+      line-height: 1.8;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .gallery figure {
+      margin: 0;
+      text-align: center;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+      border-color: #E87722;
+    }
+
+    .gallery figcaption {
+      font-size: 0.9em;
+      color: #333;
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    #lightbox {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border: 4px solid white;
+      border-radius: 10px;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 30px;
+      border-left: 3px solid #E87722;
+      margin-top: 20px;
+    }
+
+    .timeline-event {
+      margin-bottom: 20px;
+    }
+
+    .timeline-event h4 {
+      margin: 0;
+      color: #0C2340;
+    }
+
+    .timeline-event p {
+      margin: 4px 0 0 0;
+    }
+
+    /* Lab member cards */
+    .team {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .member-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      width: 220px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+
+    .member-card:hover {
+      transform: scale(1.03);
+    }
+
+    .member-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      border: 3px solid #0C2340;
+    }
+
+    footer {
+      background: #0C2340;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="overlay"></div>
+  <div class="content">
+    <img src="image/au.png" alt="Lab Logo" style="height: 100px;">
+    <div>
+      <h1 class="lab-title">Urban Forestry Lab</h1>
+      <p style="margin: 0 0 2px 0;">College of Forestry, Wildlife and Environment</p>
+      <p style="margin: 0;"><i class="fas fa-map-marker-alt"></i> Auburn University</p>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <a href="#" onclick="showSection('home')"><i class="fas fa-home"></i> Home</a>
+  <a href="#" onclick="showSection('research')"><i class="fas fa-flask"></i> Research</a>
+  <a href="#" onclick="showSection('publications')"><i class="fas fa-book"></i> Publications</a>
+  <a href="#" onclick="showSection('members')"><i class="fas fa-users"></i> Lab Members</a>
+  <a href="#" onclick="showSection('contact')"><i class="fas fa-envelope"></i> Contact</a>
+<a href="#" onclick="showSection('join')"><i class="fas fa-user-plus"></i> Join the Lab</a>
+<a href="#" onclick="showSection('map-section')"><i class="fas fa-map-marked-alt"></i> Study Map</a>
+
+
+</nav>
+
+<section id="home" class="active">
+  <h2>Welcome</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start; justify-content: center;">
+
+    <!-- Text Block -->
+    <div style="flex: 1 1 400px; min-width: 300px;">
+      <p>
+        We are a research group focused on advancing knowledge in urban forestry through cutting-edge technologies such as
+        Terrestrial Laser Scanning (TLS), Near-Infrared Spectroscopy (NIRS), and tree-ring science. Our work supports sustainable
+        urban ecosystems and evidence-based arboricultural practices.
+      </p>
+    </div>
+
+    <!-- Embedded YouTube Video -->
+    <div style="flex: 1 1 400px; min-width: 300px;">
+      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe
+          src="https://www.youtube.com/embed/7SzsJ5a7Ips"
+          frameborder="0"
+          allowfullscreen
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 10px;">
+        </iframe>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Existing Gallery Section -->
+  <h3 style="margin-top: 40px;">Photo Gallery</h3>
+  <div class="gallery">
+    <figure>
+      <img src="image/PHOTO.gif" onclick="openLightbox(this.src)">
+      <figcaption>TLS Head</figcaption>
+    </figure>
+    <figure>
+      <img src="image/leveling.jpg" onclick="openLightbox(this.src)">
+      <figcaption>Leveling laser scanner</figcaption>
+    </figure>
+    <figure>
+      <img src="image/pointcloud.jpg" onclick="openLightbox(this.src)">
+      <figcaption>Point Cloud</figcaption>
+    </figure>
+    <figure>
+      <img src="image/scan position2.jpg" onclick="openLightbox(this.src)">
+      <figcaption>Scan Position</figcaption>
+    </figure>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="">
+  </div>
+</section>
+<section id="research">
+  <h2>Research Timeline</h2>
+
+    <div class="timeline-event">
+      <h4>2024 – Core Collection Begins</h4>
+      <p>Extracted tree cores from urban parks and street trees.</p>
+    </div>
+    <div class="timeline-event">
+      <h4>2025 – CHN Analyzer Integration</h4>
+      <p>Carbon content analysis of wood samples.</p>
+    </div>
+    <div class="timeline-event">
+      <h4>2025 – Comparative Carbon Estimation</h4>
+      <p>Combining TLS + i-Tree + NIRS estimates for 90 urban trees.</p>
+    </div>
+  </div>
+
+</section>
+
+
+<section id="publications">
+  <h2>Publications</h2>
+  <ul>
+    <li><i class="fas fa-file-alt"></i> <b>Arseniou, G.</b>, & MacFarlane, D. W. (2021). Fractal dimension of tree crowns explains species functional‐trait responses to urban environments at different scales. <i>Ecological Applications </i>, 31(4), e02297 <a href="https://doi.org/10.1002/eap.2297" target="_blank">[Link]</a></li>
+    <li><i class="fas fa-file-alt"></i> Kharel, B., Ayer, <b>S., Kafle</b>, S., Timilsina, S., Bhatta, K. P., Gautam, J., ... & Airee, J. (2024). Current and future habitat suitability modelling of Bambusa teres outside forest areas in Nepal under climate change scenarios.<i> Advances in Bamboo Science </i>, 9,100112<a href="https://www.sciencedirect.com/science/article/pii/S2773139124000570" target="_blank">[Link]</a></li>
+
+    
+<li><i class="fas fa-file-alt"></i> <b>Kafle, S.</b>, Sandeep, K. C., Poudyal, B., & Devkota, S. (2023). Machine learning approach to detect land use land cover (LULC) change in Chure region of Sarlahi district, Nepal. <i>Archives of Agriculture and Environmental Science, 8(2), 168-174</i>.</li>
+
+  </ul>
+</section>
+
+<section id="members">
+  <h2>Lab Members</h2>
+
+  <!-- Lab Head -->
+  <h3><i class="fas fa-user-tie"></i> Lab Head</h3>
+  <div class="team">
+    <div class="member-card">
+      <img src="image/ga.jpg" alt="Dr. Georgios Arseniou">
+      <h4>Dr. Georgios Arseniou</h4>
+      <p>Assistant Professor & Extension Specialist</p>
+      <p style="font-style: italic; font-size: 0.9em;">"Advancing arboriculture and urban forestry."</p>
+    </div>
+  </div>
+
+  <!-- Graduate Students -->
+  <h3><i class="fas fa-user-graduate"></i> Graduate Students</h3>
+  <div class="team">
+    <!-- Samit -->
+    <div class="member-card">
+      <img src="image/cover.png" alt="Samit Kafle">
+      <h4>Samit Kafle</h4>
+      <p>Graduate Research Assistant</p>
+      <p style="font-style: italic; font-size: 0.9em;">"Exploring urban tree carbon stocks using novel Terrestrial Laser Scanning Technology."</p>
+    </div>
+
+    <!-- Additional Graduate Student -->
+    <div class="member-card">
+      <img src="image/logo.webp" alt="Future Grad Student">
+      <h4>Naga Spurthi Acharam</h4>
+      <p>Graduate Research Assistant</p>
+      <p style="font-style: italic; font-size: 0.9em;">"Codominant."</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Contact Us</h2>
+  <p><i class="fas fa-envelope"></i> szk0270@auburn.edu</p>
+  <p><i class="fas fa-map-marker-alt"></i> Urban Forestry Lab, Auburn University</p>
+</section>
+
+
+<section id="join">
+  <h2><i class="fas fa-handshake"></i> Join the Lab</h2>
+  <p>
+    Interested in joining our team? Fill out this short form to tell us about yourself, and we’ll be in touch.
+  </p>
+
+  <form action="https://docs.google.com/forms/d/e/1FAIpQLSe8zAWG3-QlkJXw4FIL8NnzVf2hA2kB9loBD6ED7TUNxsFyXw/formResponse" method="POST" target="_blank">
+    <label for="Name">Full Name:</label><br>
+    <input type="text" name="Name" required style="width: 100%; padding: 8px; margin-bottom: 12px; border-radius: 4px; border: 1px solid #ccc;"><br>
+
+    <label for="Email">Email Address:</label><br>
+    <input type="email" name="entry.YYYYYYYYY" required style="width: 100%; padding: 8px; margin-bottom: 12px; border-radius: 4px; border: 1px solid #ccc;"><br>
+
+    <label for="Message">Message:</label><br>
+    <textarea name="entry.ZZZZZZZZZ" rows="5" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></textarea><br><br>
+
+    <button type="submit" style="background-color: #E87722; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold;">
+      <i class="fas fa-paper-plane"></i> Submit Form
+
+
+    </button>
+
+  </form>
+</section>
+
+<section id="map-section">
+  <h2>Study Site Map</h2>
+  <div id="map" style="height: 500px; border-radius: 10px; margin-top: 20px;"></div>
+</section>
+
+
+
+<footer>
+  <p>&copy; 2025 Urban Forestry Lab | Auburn University</p>
+</footer>
+
+<script>
+  function showSection(sectionId) {
+    const sections = document.querySelectorAll("section");
+    sections.forEach(sec => {
+      sec.classList.remove("active");
+      sec.style.display = 'none';
+    });
+    const target = document.getElementById(sectionId);
+    target.style.display = 'block';
+    setTimeout(() => {
+      target.classList.add("active");
+    }, 50);
+  }
+
+  function openLightbox(src) {
+    document.getElementById('lightbox').style.display = 'flex';
+    document.getElementById('lightbox-img').src = src;
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+  }
+</script>
+
+<script>
+  // Initialize map only once
+  let mapInitialized = false;
+  let map;
+
+  function initializeMap() {
+    if (mapInitialized) return;
+
+    map = L.map('map').setView([32.6099, -85.4808], 13); // Auburn, AL
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    L.marker([32.6099, -85.4808]).addTo(map)
+      .bindPopup('<b>Urban Forestry Lab</b><br>Auburn University');
+
+    mapInitialized = true;
+  }
+
+  function showSection(sectionId) {
+    const sections = document.querySelectorAll("section");
+    sections.forEach(sec => {
+      sec.classList.remove("active");
+      sec.style.display = 'none';
+    });
+    const target = document.getElementById(sectionId);
+    target.style.display = 'block';
+    setTimeout(() => {
+      target.classList.add("active");
+      if (sectionId === 'map-section') {
+        setTimeout(() => {
+          initializeMap();
+          map.invalidateSize();
+        }, 150);
+      }
+    }, 50);
+  }
+</script>
+
+</body>
+</html>
