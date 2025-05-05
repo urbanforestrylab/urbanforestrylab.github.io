@@ -584,11 +584,17 @@ a:hover {
 
 <script>
   function showSection(sectionId) {
-  const sections = document.querySelectorAll("section");
-  sections.forEach(sec => {
-    sec.classList.remove("active");
-    sec.style.display = 'none';
-  });
+    const sections = document.querySelectorAll("section");
+    sections.forEach(sec => {
+      sec.classList.remove("active");
+      sec.style.display = 'none';
+    });
+    const target = document.getElementById(sectionId);
+    target.style.display = 'block';
+    setTimeout(() => {
+      target.classList.add("active");
+    }, 50);
+  }
 
   const target = document.getElementById(sectionId);
   target.style.display = 'block';
@@ -695,15 +701,6 @@ a:hover {
   setInterval(() => changeSlide(1), 5000);
 </script>
 
-  <script>
-  window.addEventListener('load', () => {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-      showSection(hash);
-    } else {
-      showSection('home');
-    }
-  });
-</script>
+
 </body>
 </html>
