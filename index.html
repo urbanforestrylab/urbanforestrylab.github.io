@@ -695,5 +695,15 @@ a:hover {
   setInterval(() => changeSlide(1), 5000);
 </script>
 
+  <script>
+  window.addEventListener('load', () => {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      showSection(hash);
+    } else {
+      showSection('home');
+    }
+  });
+</script>
 </body>
 </html>
