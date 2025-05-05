@@ -583,7 +583,7 @@ a:hover {
 </footer>
 
 <script>
-  function showSection(sectionId) {
+    function showSection(sectionId) {
     const sections = document.querySelectorAll("section");
     sections.forEach(sec => {
       sec.classList.remove("active");
@@ -596,24 +596,7 @@ a:hover {
     }, 50);
   }
 
-  const target = document.getElementById(sectionId);
-  target.style.display = 'block';
-  setTimeout(() => {
-    target.classList.add("active");
-
-    if (sectionId === 'contact') {
-      setTimeout(() => {
-        initializeMap();
-        map.invalidateSize();
-      }, 150);
-    }
-
-    // Update the URL without reloading
-    history.pushState(null, null, `#${sectionId}`);
-  }, 50);
-}
-
-
+<script>
   function openLightbox(src) {
     document.getElementById('lightbox').style.display = 'flex';
     document.getElementById('lightbox-img').src = src;
