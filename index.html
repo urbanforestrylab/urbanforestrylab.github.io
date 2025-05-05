@@ -23,6 +23,14 @@
     html {
       scroll-behavior: smooth;
     }
+a {
+  color: #0C2340;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
 
     header {
       position: relative;
@@ -222,6 +230,73 @@
       padding: 15px;
       margin-top: 20px;
     }
+
+
+.slideshow-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 16 / 9;
+  margin: auto;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000;
+}
+
+.slides {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s ease-in-out;
+}
+
+.slide {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.caption {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 8px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  background-color: rgba(0,0,0,0.4);
+  border: none;
+  z-index: 2;
+}
+
+.prev { left: 10px; }
+.next { right: 10px; }
+
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
   </style>
 </head>
 
@@ -245,8 +320,8 @@
   <a href="#" onclick="showSection('publications')"><i class="fas fa-book"></i> Publications</a>
   <a href="#" onclick="showSection('members')"><i class="fas fa-users"></i> Lab Members</a>
   <a href="#" onclick="showSection('contact')"><i class="fas fa-envelope"></i> Contact</a>
-<a href="#" onclick="showSection('join')"><i class="fas fa-user-plus"></i> Join the Lab</a>
-<a href="#" onclick="showSection('map-section')"><i class="fas fa-map-marked-alt"></i> Study Map</a>
+
+
 
 
 </nav>
@@ -264,48 +339,81 @@
       </p>
     </div>
 
-    <!-- Embedded YouTube Video -->
-    <div style="flex: 1 1 400px; min-width: 300px;">
-      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-        <iframe
-          src="https://www.youtube.com/embed/7SzsJ5a7Ips"
-          frameborder="0"
-          allowfullscreen
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 10px;">
-        </iframe>
-      </div>
-    </div>
+    
+<!-- Slideshow -->
+<div class="slideshow-container" style="flex: 1 1 400px; min-width: 300px; position: relative;">
 
+ <div class="slides" id="slides">
+    <div class="slide">
+      <img src="image/PHOTO.gif" alt="TLS Head">
+      <div class="caption">TLS Head</div>
+    </div>
+    <div class="slide">
+      <img src="image/leveling.jpg" alt="Leveling">
+      <div class="caption">Leveling laser scanner</div>
+    </div>
+    <div class="slide">
+      <img src="image/pointcloud.jpg" alt="Point Cloud">
+      <div class="caption">Point Cloud</div>
+    </div>
+    <div class="slide">
+      <img src="image/scan position2.jpg" alt="Scan Position">
+      <div class="caption">Scan Position</div>
+    </div>
   </div>
+
+  <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
+  <button class="next" onclick="changeSlide(1)">&#10095;</button>
+</div>
+  </div>
+
+
 
   <!-- Existing Gallery Section -->
-  <h3 style="margin-top: 40px;">Photo Gallery</h3>
-  <div class="gallery">
-    <figure>
-      <img src="image/PHOTO.gif" onclick="openLightbox(this.src)">
-      <figcaption>TLS Head</figcaption>
-    </figure>
-    <figure>
-      <img src="image/leveling.jpg" onclick="openLightbox(this.src)">
-      <figcaption>Leveling laser scanner</figcaption>
-    </figure>
-    <figure>
-      <img src="image/pointcloud.jpg" onclick="openLightbox(this.src)">
-      <figcaption>Point Cloud</figcaption>
-    </figure>
-    <figure>
-      <img src="image/scan position2.jpg" onclick="openLightbox(this.src)">
-      <figcaption>Scan Position</figcaption>
-    </figure>
-  </div>
+<!-- Latest News Section -->
+<h3 style="margin-top: 40px;">Latest News</h3>
+
+<div id="news-container">
+  <!-- First few visible news items -->
+
+<div class="news-item">
+  <h4>📢 April 2025</h4>
+   <p>Dr. Georgios Arseniou and Dr. Hao Chen won grantmanship award.<i> (Left to Right) Dr. Daowei Zhang, Dr. Hao Chen, Dr. Georgios Arseniou </i></p>
+<img src="image/award.jpg" alt="IUFRO Poster" onclick="openLightbox(this.src)" style="cursor: zoom-in; width: 40%; max-width: 600px; border-radius: 8px; margin: 10px 0;">
+
+
+</div>
+
+
+
+  <!-- Hidden older news -->
+  <div id="more-news" style="display: none;">
+
+
+
+
+      </div>
+
+  <!-- Button -->
+  <button onclick="toggleNews()" id="toggle-news-btn" style="background-color: #E87722; color: white; border: none; padding: 10px 20px; margin-top: 15px; border-radius: 5px; cursor: pointer;">
+    See More
+  </button>
+</div>
 
   <!-- Lightbox -->
   <div id="lightbox" onclick="closeLightbox()">
     <img id="lightbox-img" src="">
   </div>
 </section>
+
+
+
 <section id="research">
-  <h2>Research Timeline</h2>
+
+
+
+  <h2>Research </h2>
+<!-- Embedded YouTube Video -->
 
     <div class="timeline-event">
       <h4>2024 – Core Collection Begins</h4>
@@ -320,21 +428,58 @@
       <p>Combining TLS + i-Tree + NIRS estimates for 90 urban trees.</p>
     </div>
   </div>
+<div class="timeline-event">
+    <div style="flex: 1 1 0px; min-width: 300px;">
+      <div style="position: relative; padding-bottom: 54%; height: 0; overflow: hidden;">
+        <iframe
+          src="https://www.youtube.com/embed/7SzsJ5a7Ips"
+          frameborder="0"
+          allowfullscreen
+          style="position: absolute; top: 0; left: 0; width: 50%; height: 50%; border-radius: 10px;">
+        </iframe>
+      </div>
+    </div>
+</div>
 
 </section>
+
+
 
 
 <section id="publications">
   <h2>Publications</h2>
-  <ul>
-    <li><i class="fas fa-file-alt"></i> <b>Arseniou, G.</b>, & MacFarlane, D. W. (2021). Fractal dimension of tree crowns explains species functional‐trait responses to urban environments at different scales. <i>Ecological Applications </i>, 31(4), e02297 <a href="https://doi.org/10.1002/eap.2297" target="_blank">[Link]</a></li>
-    <li><i class="fas fa-file-alt"></i> Kharel, B., Ayer, <b>S., Kafle</b>, S., Timilsina, S., Bhatta, K. P., Gautam, J., ... & Airee, J. (2024). Current and future habitat suitability modelling of Bambusa teres outside forest areas in Nepal under climate change scenarios.<i> Advances in Bamboo Science </i>, 9,100112<a href="https://www.sciencedirect.com/science/article/pii/S2773139124000570" target="_blank">[Link]</a></li>
 
-    
-<li><i class="fas fa-file-alt"></i> <b>Kafle, S.</b>, Sandeep, K. C., Poudyal, B., & Devkota, S. (2023). Machine learning approach to detect land use land cover (LULC) change in Chure region of Sarlahi district, Nepal. <i>Archives of Agriculture and Environmental Science, 8(2), 168-174</i>.</li>
+  <h3><i class="fas fa-microscope"></i> Research Publications</h3>
+  <ul>
+
+
+    <li><i class="fas fa-file-alt"></i> <b>Arseniou, G.</b>, MacFarlane, D.W. & Raumonen, P. (2025). A new approach for quantification of total above-ground heartwood and sapwood volume of trees. <i>Trees</i> 39, 24.<a href="https://doi.org/10.1007/s00468-024-02597-4" target="_blank">[Link]</a></li>
+
+    <li><i class="fas fa-file-alt"></i> <b>Arseniou, G.</b>, MacFarlane, D.W., Calders, K. et al. (2023). Accuracy differences in aboveground woody biomass estimation with terrestrial laser scanning for trees in urban and rural forests and different leaf conditions. <i>Trees</i> 37, 761–779 . <a href="https://doi.org/10.1007/s00468-022-02382-1" target="_blank">[Link]</a></li>
+    <li><i class="fas fa-file-alt"></i> <b>Arseniou, G.</b>, MacFarlane, D. W., & Seidel, D. (2021). Woody Surface Area Measurements with Terrestrial Laser Scanning Relate to the Anatomical and Structural Complexity of Urban Trees.<i> Remote Sensing </i>, 13(16), 3153. <a href="https://doi.org/10.3390/rs13163153" target="_blank">[Link]</a></li>
+
+    <li><i class="fas fa-file-alt"></i> <b>Arseniou, G.</b>, MacFarlane, D. W., & Seidel, D. (2021). Measuring the Contribution of Leaves to the Structural Complexity of Urban Tree Crowns with Terrestrial Laser Scanning. <i>Remote Sensing</i>, 13(14), 2773. <a href="https://doi.org/10.3390/rs13142773" target="_blank">[Link]</a></li>
+
+    <li><i class="fas fa-file-alt"></i> <b>Arseniou, G.</b>, and D. W. MacFarlane. 2021. Fractal dimension of tree crowns explains species functional-trait responses to urban environments at different scales. Ecological Applications 31(4):e02297. <a href="https://doi.org/10.1002/eap.2297" target="_blank">[Link]</a></li>
+
+
+  </ul>
+
+  <h3><i class="fas fa-bullhorn"></i> Extension Publications</h3>
+  <ul>
+    <li><i class="fas fa-file-alt"></i> Georgios Arseniou, April 2025, Spotting Danger: How to Identify & Assess Hazard Trees, FOR-2175. <a href="https://www.aces.edu/blog/topics/forestry/spotting-danger-how-to-identify-assess-hazard-trees/" target="_blank">[Link]</a></li>
+
+    <li><i class="fas fa-file-alt"></i> Georgios Arseniou, April 2024, Economic and Socio-Ecological Importance of Urban Forest Carbon Stocks, FOR-2158. <a href="https://www.aces.edu/blog/topics/forestry/economic-and-socio-ecological-importance-of-urban-forest-carbon-stocks/" target="_blank">[Link]</a></li>
+
+    <li><i class="fas fa-file-alt"></i> Georgios Arseniou, April 2024, Quantification of Urban Forest Carbon Stocks Using Terrestrial Laser Scanning Technology, FOR-2159. <a href="https://www.aces.edu/blog/topics/forestry/quantification-of-urban-forest-carbon-stocks-using-terrestrial-laser-scanning-technology/" target="_blank">[Link]</a></li>
+
+
 
   </ul>
 </section>
+
+
+
 
 <section id="members">
   <h2>Lab Members</h2>
@@ -373,8 +518,35 @@
 
 <section id="contact">
   <h2>Contact Us</h2>
-  <p><i class="fas fa-envelope"></i> szk0270@auburn.edu</p>
-  <p><i class="fas fa-map-marker-alt"></i> Urban Forestry Lab, Auburn University</p>
+
+  <!-- Contact Card -->
+  <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 30px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-top: 20px;">
+
+    <!-- Dr. Arseniou Photo -->
+    <div style="flex: 0 0 160px;">
+      <img src="image/ga.jpg" alt="Dr. Georgios Arseniou" style="width: 250px; height: 250px; border-radius: 50%; object-fit: cover; border: 4px solid #0C2340;">
+    </div>
+
+    <!-- Contact Info -->
+    <div style="flex: 1; min-width: 250px;">
+      <h3 style="margin: 0;">Dr. Georgios Arseniou, PhD</h3>
+      <p style="margin: 6px 0 0; font-weight: bold;">Assistant Professor & Extension Specialist of Urban Forestry</p>
+      <p style="margin: 4px 0;">College of Forestry, Wildlife and Environment<br>Auburn University</p>
+      
+      <p style="margin: 10px 0 4px;"><i class="fas fa-map-marker-alt"></i> 3301 CFWE Building, Room 3329<br>602 Duncan Dr, Auburn, AL 36849</p>
+
+      <p style="margin: 4px 0;"><i class="fas fa-envelope"></i> <a href="mailto:gza041@auburn.edu">gza041@auburn.edu</a></p>
+      <p style="margin: 4px 0;"><i class="fas fa-phone-alt"></i> Office: <a href="tel:+13348445757">(334) 844-5757</a></p>
+      <p style="margin: 4px 0;"><i class="fas fa-mobile-alt"></i> Mobile: <a href="tel:+15177556858">(517) 755-6858</a></p>
+      <p style="margin: 4px 0;"><i class="fab fa-linkedin"></i> <a href="https://www.linkedin.com/in/georgios-arseniou/" target="_blank">linkedin.com/in/georgios-arseniou</a></p>
+    </div>
+  </div>
+
+ 
+
+<h3 style="margin-top: 40px;">Map</h3>
+<div id="map" style="height: 500px; width:500px; border-radius: 10px; margin-top: 20px;"></div>
+
 </section>
 
 
@@ -403,10 +575,6 @@
   </form>
 </section>
 
-<section id="map-section">
-  <h2>Study Site Map</h2>
-  <div id="map" style="height: 500px; border-radius: 10px; margin-top: 20px;"></div>
-</section>
 
 
 
@@ -439,24 +607,8 @@
 </script>
 
 <script>
-  // Initialize map only once
   let mapInitialized = false;
   let map;
-
-  function initializeMap() {
-    if (mapInitialized) return;
-
-    map = L.map('map').setView([32.6099, -85.4808], 13); // Auburn, AL
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    L.marker([32.6099, -85.4808]).addTo(map)
-      .bindPopup('<b>Urban Forestry Lab</b><br>Auburn University');
-
-    mapInitialized = true;
-  }
 
   function showSection(sectionId) {
     const sections = document.querySelectorAll("section");
@@ -464,11 +616,15 @@
       sec.classList.remove("active");
       sec.style.display = 'none';
     });
+
     const target = document.getElementById(sectionId);
     target.style.display = 'block';
+
     setTimeout(() => {
       target.classList.add("active");
-      if (sectionId === 'map-section') {
+
+      // Initialize map if the contact section is shown
+      if (sectionId === 'contact') {
         setTimeout(() => {
           initializeMap();
           map.invalidateSize();
@@ -476,6 +632,55 @@
       }
     }, 50);
   }
+
+  function initializeMap() {
+    if (mapInitialized) return;
+
+    map = L.map('map').setView([32.594859, -85.487821], 15); // Auburn
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    L.marker([32.594859, -85.487821]).addTo(map)
+      .bindPopup('<b>Urban Forestry Lab</b><br>College of Forestry, Wildlife and Environment <br>Auburn University');
+
+    mapInitialized = true;
+  }
+</script>
+
+<script>
+  function toggleNews() {
+    const moreNews = document.getElementById("more-news");
+    const btn = document.getElementById("toggle-news-btn");
+
+    if (moreNews.style.display === "none") {
+      moreNews.style.display = "block";
+      btn.textContent = "See Less";
+    } else {
+      moreNews.style.display = "none";
+      btn.textContent = "See More";
+    }
+  }
+</script>
+
+<script>
+  let currentIndex = 0;
+
+  function showSlide(index) {
+    const slidesContainer = document.getElementById("slides");
+    const totalSlides = slidesContainer.children.length;
+    currentIndex = (index + totalSlides) % totalSlides;
+    const offset = -currentIndex * 100;
+    slidesContainer.style.transform = `translateX(${offset}%)`;
+  }
+
+  function changeSlide(n) {
+    showSlide(currentIndex + n);
+  }
+
+  // Auto-slide every 5 seconds
+  setInterval(() => changeSlide(1), 5000);
 </script>
 
 </body>
