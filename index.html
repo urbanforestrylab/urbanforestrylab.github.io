@@ -315,11 +315,11 @@ a:hover {
 </header>
 
 <nav>
-  <a href="#" onclick="showSection('home')"><i class="fas fa-home"></i> Home</a>
-  <a href="#" onclick="showSection('research')"><i class="fas fa-flask"></i> Research</a>
-  <a href="#" onclick="showSection('publications')"><i class="fas fa-book"></i> Publications</a>
-  <a href="#" onclick="showSection('members')"><i class="fas fa-users"></i> Lab Members</a>
-  <a href="#" onclick="showSection('contact')"><i class="fas fa-envelope"></i> Contact</a>
+  <a href="#home" onclick="showSection('home')"><i class="fas fa-home"></i> Home</a>
+  <a href="#research" onclick="showSection('research')"><i class="fas fa-flask"></i> Research</a>
+  <a href="#publications" onclick="showSection('publications')"><i class="fas fa-book"></i> Publications</a>
+  <a href="#labmembers" onclick="showSection('members')"><i class="fas fa-users"></i> Lab Members</a>
+  <a href="#contact" onclick="showSection('contact')"><i class="fas fa-envelope"></i> Contact</a>
 
 
 
@@ -584,17 +584,29 @@ a:hover {
 
 <script>
   function showSection(sectionId) {
-    const sections = document.querySelectorAll("section");
-    sections.forEach(sec => {
-      sec.classList.remove("active");
-      sec.style.display = 'none';
-    });
-    const target = document.getElementById(sectionId);
-    target.style.display = 'block';
-    setTimeout(() => {
-      target.classList.add("active");
-    }, 50);
-  }
+  const sections = document.querySelectorAll("section");
+  sections.forEach(sec => {
+    sec.classList.remove("active");
+    sec.style.display = 'none';
+  });
+
+  const target = document.getElementById(sectionId);
+  target.style.display = 'block';
+  setTimeout(() => {
+    target.classList.add("active");
+
+    if (sectionId === 'contact') {
+      setTimeout(() => {
+        initializeMap();
+        map.invalidateSize();
+      }, 150);
+    }
+
+    // Update the URL without reloading
+    history.pushState(null, null, `#${sectionId}`);
+  }, 50);
+}
+
 
   function openLightbox(src) {
     document.getElementById('lightbox').style.display = 'flex';
